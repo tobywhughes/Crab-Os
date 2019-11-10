@@ -3,23 +3,29 @@
 
 use core::panic::PanicInfo;
 
+mod vga_buffer;
+
 static HELLO: &[u8] = b"Hello, welcome to CRAB OS";
 
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     loop {}
 }
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    let vga_buffer = 0xb8000 as *mut u8;
-
-    for (i, &byte) in HELLO.iter().enumerate() {
-        unsafe {
-            *vga_buffer.offset(i as isize * 2) = byte;
-            *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-        }
-    }
-
+    welcome_text();
+    panic!("End of test code reached. Entering panic.");
     loop {}
+}
+
+
+pub fn welcome_text() {
+    use core::fmt::Write;
+
+    println!("Hello, welcome to CRAB OS");
+
+    let format_example: u8 = 100;
+    println!("All humans and crabs are {}% welcome", format_example);
 }
