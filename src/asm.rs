@@ -4,3 +4,5 @@ pub fn nop() {
         asm!("NOP");
     }
 }
+
+
