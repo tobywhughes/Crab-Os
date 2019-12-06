@@ -28,4 +28,6 @@ pub extern "C" fn _start() -> ! {
 fn should_fail() {
     serial_print!("should_fail... ");
     assert_eq!(0, 1);
+    exit_qemu(QemuExitCode::Failed);
+
 }

@@ -1,0 +1,9 @@
+{
+    "testCommand": "cargo",
+    "blindCommit": false,
+    "annotations": "nanocommit",
+    "watchFiles": [],
+    "defaultCommandArgs": "xtest",
+    "commitMessage": null,
+    "customAnnotations": null
+}

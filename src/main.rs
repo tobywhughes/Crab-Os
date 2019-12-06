@@ -4,6 +4,8 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(crab_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+#![feature(asm)]
+
 
 use core::panic::PanicInfo;
 use crab_os::println;
@@ -29,12 +31,21 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+    init();
+
     welcome_text();
 
     #[cfg(test)]
     test_main();
     panic!("End of test code reached. Entering panic.");
     loop {}
+}
+
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+fn init() {
+    unsafe {
+        asm!("NOP");
+    }
 }
 
 
