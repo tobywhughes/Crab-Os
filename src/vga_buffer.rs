@@ -154,31 +154,23 @@ use crate::{serial_print, serial_println};
 
 #[test_case]
 fn test_println_does_not_result_in_a_panic() {
-    serial_print!("test_println_does_not_result_in_a_panic... ");
     println!("test_println_simple output");
-    serial_println!("[ok]");
 }
 
 #[test_case]
 fn test_println_called_many_times_does_not_result_in_a_panic() {
     let many_run_count = 200;
-    serial_print!("test_println_called_many_times_does_not_result_in_a_panic... ");
     for _ in 0..many_run_count {
         println!("test_println_simple output");
     }
-    serial_println!("[ok]");
 }
 
 #[test_case]
 fn test_verify_that_characters_read_from_buffer_match_println_string() {
-    serial_print!("test_verify_that_characters_read_from_buffer_match_println_string... ");
-
     let s = "Some test string that fits on a single line";
     println!("{}", s);
     for (i, c) in s.chars().enumerate() {
         let screen_char = WRITER.lock().buffer.chars[BUFFER_HEIGHT - 2][i].read();
         assert_eq!(char::from(screen_char.ascii_character), c);
     }
-
-    serial_println!("[ok]");
 }
