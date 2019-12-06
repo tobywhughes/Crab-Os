@@ -1,14 +1,14 @@
 #![no_std]
 #![no_main]
 
+
 #![feature(custom_test_frameworks)]
 #![test_runner(crab_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
-#![feature(asm)]
-
 
 use core::panic::PanicInfo;
 use crab_os::println;
+use crab_os::asm;
 
 static HELLO: &[u8] = b"Hello, welcome to CRAB OS";
 
@@ -43,9 +43,7 @@ pub extern "C" fn _start() -> ! {
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 fn init() {
-    unsafe {
-        asm!("NOP");
-    }
+    asm::nop();
 }
 
 

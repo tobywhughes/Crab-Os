@@ -1,4 +1,6 @@
 #![no_std]
+#![feature(asm)]
+
 
 #![cfg_attr(test, no_main)]
 #![feature(custom_test_frameworks)]
@@ -10,6 +12,7 @@ use core::panic::PanicInfo;
 
 pub mod serial;
 pub mod vga_buffer;
+pub mod asm;
 
 pub fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests", tests.len());
