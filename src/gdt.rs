@@ -32,10 +32,31 @@ impl GDTSegment {
             (self.base_mid as u64)
         ) as u64
     }
+
+    fn code_segment() -> u64 {
+        let segment = GDTSegment {
+            limit_low: 0xFFFF,
+            base_low: 0,
+            base_mid: 0x00,
+            segment_type: 0b00011010,
+            privilege_level: 0x00,
+            present_flag: true,
+            limit_high: 0x0F,
+            attributes: 0b00000100,
+            granularity: true,
+            base_high: 0x00
+        };
+        return segment.u64_representation();
+    }
 }
 
 pub fn enter_protected_mode() {
+    create_gdt_definition();
     asm::disable_interrupts();
+}
+
+pub fn create_gdt_definition() {
+    let code_segment = GDTSegment::code_segment();
 }
 
 #[test_case]
