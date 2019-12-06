@@ -8,7 +8,8 @@
 
 use core::panic::PanicInfo;
 use crab_os::println;
-use crab_os::asm;
+use crab_os::gdt;
+
 
 #[panic_handler]
 #[cfg(not(test))]
@@ -40,8 +41,10 @@ pub extern "C" fn _start() -> ! {
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 fn init() {
-    asm::nop();
+    gdt::enter_protected_mode();
 }
+
+
 
 
 pub fn welcome_text() {

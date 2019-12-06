@@ -32,3 +32,13 @@ use crab_os::asm;
 fn test_asm_nop_does_not_panic() {
     asm::nop();
 }
+
+#[test_case]
+fn test_asm_cli_does_not_panic() {
+    asm::disable_interrupts();
+}
+
+#[test_case]
+fn test_asm_sti_does_not_panic() {
+    asm::enable_interrupts();
+}
