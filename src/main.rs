@@ -10,10 +10,6 @@ use core::panic::PanicInfo;
 use crab_os::println;
 use crab_os::asm;
 
-static HELLO: &[u8] = b"Hello, welcome to CRAB OS";
-
-
-
 #[panic_handler]
 #[cfg(not(test))]
 fn panic(info: &PanicInfo) -> ! {
@@ -23,6 +19,7 @@ fn panic(info: &PanicInfo) -> ! {
 
 
 #[panic_handler]
+#[allow(unreachable_code)]
 #[cfg(test)]
 fn panic(info: &PanicInfo) -> ! {
     crab_os::test_panic_handler(info);
@@ -30,6 +27,7 @@ fn panic(info: &PanicInfo) -> ! {
 }
 
 #[no_mangle]
+
 pub extern "C" fn _start() -> ! {
     init();
 
@@ -37,7 +35,6 @@ pub extern "C" fn _start() -> ! {
 
     #[cfg(test)]
     test_main();
-    panic!("End of test code reached. Entering panic.");
     loop {}
 }
 
@@ -48,10 +45,7 @@ fn init() {
 
 
 pub fn welcome_text() {
-    use core::fmt::Write;
-
     println!("Hello, welcome to CRAB OS");
-
     let format_example: u8 = 100;
     println!("All humans and crabs are {}% welcome", format_example);
 }

@@ -4,7 +4,7 @@
 
 
 use core::panic::PanicInfo;
-use crab_os::{QemuExitCode, exit_qemu, serial_println, serial_print};
+use crab_os::{QemuExitCode, exit_qemu};
 
 
 

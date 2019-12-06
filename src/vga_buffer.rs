@@ -149,9 +149,6 @@ pub fn _print(args: fmt::Arguments) {
 }
 
 
-#[cfg(test)]
-use crate::{serial_print, serial_println};
-
 #[test_case]
 fn test_println_does_not_result_in_a_panic() {
     println!("test_println_simple output");

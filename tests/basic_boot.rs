@@ -4,7 +4,7 @@
 #![test_runner(crab_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-use crab_os::{println, serial_print, serial_println};
+use crab_os::{println};
 use core::panic::PanicInfo;
 
 #[no_mangle]
