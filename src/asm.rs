@@ -17,4 +17,12 @@ pub fn disable_interrupts() {
     }
 }
 
+use crate::gdt::Descriptor;
+
+pub fn load_global_descriptor_table(table_pointer: &Descriptor) {
+    unsafe {
+        asm!("LGDT ($0)" : : "r"(table_pointer));
+    }
+}
+
 

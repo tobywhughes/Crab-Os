@@ -116,17 +116,9 @@ use crate::println;
 
 pub fn enter_protected_mode() {
     asm::disable_interrupts();
-    debug_print_GDT();
-
     let GDT_DESCRIPTOR: Descriptor = create_gdt_definition();
-    //println!(">>> {:p}", GLOBAL_DESCRIPTOR_TABLE);
-    //println!(">>> {:X}", GLOBAL_DESCRIPTOR_TABLE.segments[1]);
-
-    //unsafe {
-    //    println!("<<< {:X}", (*GLOBAL_DESCRIPTOR_TABLE).segments[1]);
-    //}
-    debug_print_GDT();
     println!(">>> {:?}", GDT_DESCRIPTOR);
+    asm::load_global_descriptor_table(&GDT_DESCRIPTOR)
 }
 
 pub fn create_gdt_definition() -> Descriptor{
@@ -135,7 +127,9 @@ pub fn create_gdt_definition() -> Descriptor{
     println!("<<< {:x}", code_segment);
 
     unsafe {
+        GLOBAL_DESCRIPTOR_TABLE.set_segment(0, NULL_SEGMENT);
         GLOBAL_DESCRIPTOR_TABLE.set_segment(1, code_segment);
+        GLOBAL_DESCRIPTOR_TABLE.set_segment(2, data_segment);
     }
 
     let descriptor = Descriptor{
