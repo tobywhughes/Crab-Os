@@ -11,12 +11,12 @@ const GDT_SIZE: u16 = ((0x0008 * GDT_ELEMENTS as u16) - 1);
 
 #[repr(transparent)]
 pub struct GlobalDescriptorTable {
-    segments: [u64; GDT_SIZE as usize]
+    segments: [u64; GDT_ELEMENTS as usize]
 }
 
 use lazy_static::lazy_static;
 
-const GLOBAL_DESCRIPTOR_TABLE: GlobalDescriptorTable =  GlobalDescriptorTable {segments: [0_u64; GDT_SIZE as usize]};
+static GLOBAL_DESCRIPTOR_TABLE: &'static GlobalDescriptorTable =  &GlobalDescriptorTable {segments: [0_u64; GDT_ELEMENTS as usize]};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
@@ -85,17 +85,25 @@ impl GDTSegment {
 use crate::println;
 
 pub fn enter_protected_mode() {
-    let GDT_DESCRIPTOR: u64 =  GDT_SIZE as u64| unsafe { (&GLOBAL_DESCRIPTOR_TABLE as *const _ as u64) } << 16;
+    asm::disable_interrupts();
+    let GDT_DESCRIPTOR: u64 = create_gdt_definition();
+    println!(">>> {:p}", GLOBAL_DESCRIPTOR_TABLE);
+    //unsafe {
+    //    println!("<<< {:X}", (*GLOBAL_DESCRIPTOR_TABLE).segments[1]);
+    //}
     println!(">>> {:X}", GDT_DESCRIPTOR);
-    println!(">>> {:p}", &GLOBAL_DESCRIPTOR_TABLE);
-    create_gdt_definition();
-   asm::disable_interrupts();
 }
 
-pub fn create_gdt_definition() {
+pub fn create_gdt_definition() -> u64{
     let code_segment = GDTSegment::code_segment();
-    let data_segment = GDTSegment::code_segment();
-
+    let data_segment = GDTSegment::data_segment();
+    println!("<<< {:x}", code_segment);
+    unsafe {
+    //    (*(GLOBAL_DESCRIPTOR_TABLE as *mut GlobalDescriptorTable)).segments[0] = NULL_SEGMENT;
+    //    (*(GLOBAL_DESCRIPTOR_TABLE as *mut GlobalDescriptorTable)).segments[1] = code_segment;
+    //    (*(GLOBAL_DESCRIPTOR_TABLE as *mut GlobalDescriptorTable)).segments[2] = data_segment;
+    }
+    return GDT_SIZE as u64| unsafe { (GLOBAL_DESCRIPTOR_TABLE as *const _ as u64) } << 16;
 }
 
 #[test_case]

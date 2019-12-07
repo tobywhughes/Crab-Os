@@ -1,6 +1,5 @@
 #![no_std]
 #![feature(asm)]
-#![feature(const_raw_ptr_to_usize_cast)]
 
 
 #![cfg_attr(test, no_main)]
