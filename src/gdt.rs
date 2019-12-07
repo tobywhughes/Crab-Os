@@ -14,9 +14,39 @@ pub struct GlobalDescriptorTable {
     segments: [u64; GDT_ELEMENTS as usize]
 }
 
-use lazy_static::lazy_static;
+impl GlobalDescriptorTable {
+    pub fn set_segment(&mut self, index: usize, value: u64) {
+        self.segments[index] = value;
+    }
 
-static GLOBAL_DESCRIPTOR_TABLE: &'static GlobalDescriptorTable =  &GlobalDescriptorTable {segments: [0_u64; GDT_ELEMENTS as usize]};
+
+}
+
+
+use core::ops::{Deref,DerefMut};
+
+use lazy_static::lazy_static;
+use spin::Mutex;
+
+
+static mut GLOBAL_DESCRIPTOR_TABLE: GlobalDescriptorTable = GlobalDescriptorTable {segments: [0_u64; GDT_ELEMENTS as usize]};
+
+fn debug_print_GDT() {        
+    unsafe {
+        println!(">>> {:?}", GLOBAL_DESCRIPTOR_TABLE.segments);
+    }
+}
+
+// lazy_static! {
+//     static ref GLOBAL_DESCRIPTOR_TABLE: Mutex<&'static GlobalDescriptorTable> =  Mutex::new(&GlobalDescriptorTable {segments: [0_u64; GDT_ELEMENTS as usize]});
+// }
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct Descriptor {
+    limit: u16,
+    base: u32
+}
+
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
@@ -86,24 +116,33 @@ use crate::println;
 
 pub fn enter_protected_mode() {
     asm::disable_interrupts();
-    let GDT_DESCRIPTOR: u64 = create_gdt_definition();
-    println!(">>> {:p}", GLOBAL_DESCRIPTOR_TABLE);
+    debug_print_GDT();
+
+    let GDT_DESCRIPTOR: Descriptor = create_gdt_definition();
+    //println!(">>> {:p}", GLOBAL_DESCRIPTOR_TABLE);
+    //println!(">>> {:X}", GLOBAL_DESCRIPTOR_TABLE.segments[1]);
+
     //unsafe {
     //    println!("<<< {:X}", (*GLOBAL_DESCRIPTOR_TABLE).segments[1]);
     //}
-    println!(">>> {:X}", GDT_DESCRIPTOR);
+    debug_print_GDT();
+    println!(">>> {:?}", GDT_DESCRIPTOR);
 }
 
-pub fn create_gdt_definition() -> u64{
+pub fn create_gdt_definition() -> Descriptor{
     let code_segment = GDTSegment::code_segment();
     let data_segment = GDTSegment::data_segment();
     println!("<<< {:x}", code_segment);
+
     unsafe {
-    //    (*(GLOBAL_DESCRIPTOR_TABLE as *mut GlobalDescriptorTable)).segments[0] = NULL_SEGMENT;
-    //    (*(GLOBAL_DESCRIPTOR_TABLE as *mut GlobalDescriptorTable)).segments[1] = code_segment;
-    //    (*(GLOBAL_DESCRIPTOR_TABLE as *mut GlobalDescriptorTable)).segments[2] = data_segment;
+        GLOBAL_DESCRIPTOR_TABLE.set_segment(1, code_segment);
     }
-    return GDT_SIZE as u64| unsafe { (GLOBAL_DESCRIPTOR_TABLE as *const _ as u64) } << 16;
+
+    let descriptor = Descriptor{
+        limit: GDT_SIZE,
+        base: unsafe {GLOBAL_DESCRIPTOR_TABLE.segments.as_ptr() as u32 }
+    };
+    return descriptor;
 }
 
 #[test_case]
