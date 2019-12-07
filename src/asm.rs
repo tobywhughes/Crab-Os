@@ -26,3 +26,14 @@ pub fn load_global_descriptor_table(table_pointer: &Descriptor) {
 }
 
 
+pub fn get_global_descriptor_table() ->Descriptor {
+    let mut descriptor: Descriptor = Descriptor {
+        base: 0,
+        limit: 0
+    };
+    unsafe {
+        asm!("SGDT $0" : "=*m"(&mut descriptor));
+    }
+    return descriptor
+}
+

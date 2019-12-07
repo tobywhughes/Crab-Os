@@ -43,8 +43,8 @@ fn debug_print_GDT() {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
 pub struct Descriptor {
-    limit: u16,
-    base: u32
+    pub limit: u16,
+    pub base: u32
 }
 
 
@@ -118,7 +118,10 @@ pub fn enter_protected_mode() {
     asm::disable_interrupts();
     let GDT_DESCRIPTOR: Descriptor = create_gdt_definition();
     println!(">>> {:?}", GDT_DESCRIPTOR);
-    asm::load_global_descriptor_table(&GDT_DESCRIPTOR)
+    asm::load_global_descriptor_table(&GDT_DESCRIPTOR);
+    let temp = asm::get_global_descriptor_table();
+    println!(">>> temp {:?}", temp);
+
 }
 
 pub fn create_gdt_definition() -> Descriptor{
