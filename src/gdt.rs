@@ -115,19 +115,19 @@ impl GDTSegment {
 use crate::println;
 
 pub fn enter_protected_mode() {
+    println!("ENTERING PROTECTED MODE...\n");
     asm::disable_interrupts();
     let GDT_DESCRIPTOR: Descriptor = create_gdt_definition();
-    println!(">>> {:?}", GDT_DESCRIPTOR);
+    println!("GDT DESCRIPTOR PRE:  {:?}", GDT_DESCRIPTOR);
     asm::load_global_descriptor_table(&GDT_DESCRIPTOR);
     let temp = asm::get_global_descriptor_table();
-    println!(">>> temp {:?}", temp);
+    println!("GDT DESCRIPTOR POST: {:?}\n\n", temp);
 
 }
 
 pub fn create_gdt_definition() -> Descriptor{
     let code_segment = GDTSegment::code_segment();
     let data_segment = GDTSegment::data_segment();
-    println!("<<< {:x}", code_segment);
 
     unsafe {
         GLOBAL_DESCRIPTOR_TABLE.set_segment(0, NULL_SEGMENT);
