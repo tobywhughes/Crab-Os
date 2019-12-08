@@ -9,7 +9,7 @@ use crab_os::{println};
 use core::panic::PanicInfo;
 
 use crab_os::asm;
-use crab_os::gdt;
+use crab_os::models::gdt;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {

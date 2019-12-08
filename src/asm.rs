@@ -1,3 +1,4 @@
+use crate::models::gdt::Descriptor;
 
 pub fn nop() {
     unsafe {
@@ -17,7 +18,6 @@ pub fn disable_interrupts() {
     }
 }
 
-use crate::gdt::Descriptor;
 
 pub fn load_global_descriptor_table(table_pointer: &Descriptor) {
     unsafe {
