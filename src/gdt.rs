@@ -1,7 +1,5 @@
 
 use crate::asm;
-use volatile::Volatile;
-use core::ops::{Deref,DerefMut};
 use crate::models::gdt::*;
 use crate::println;
 
@@ -10,9 +8,9 @@ static mut GLOBAL_DESCRIPTOR_TABLE: GlobalDescriptorTable = GlobalDescriptorTabl
 pub fn enter_protected_mode() {
     println!("ENTERING PROTECTED MODE...\n");
     asm::disable_interrupts();
-    let GDT_DESCRIPTOR: Descriptor = create_gdt_definition();
-    println!("GDT DESCRIPTOR PRE:  {:?}", GDT_DESCRIPTOR);
-    asm::load_global_descriptor_table(&GDT_DESCRIPTOR);
+    let gdt_descriptor: Descriptor = create_gdt_definition();
+    println!("GDT DESCRIPTOR PRE:  {:?}", gdt_descriptor);
+    asm::load_global_descriptor_table(&gdt_descriptor);
     let temp = asm::get_global_descriptor_table();
     println!("GDT DESCRIPTOR POST: {:?}\n\n", temp);
 
